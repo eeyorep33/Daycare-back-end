@@ -23,20 +23,16 @@ const Announcements = require('./models/announcements')
 const app = express();
 app.use(bodyParser.json());
 
-
-app.use((req, res, next) => {   
-    res.setHeader('Access-Control-Allow-Origin', '*')
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE');
-    res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requeted-With, Content-Type, Accept, Authorization, uid');
-    next();
-});
-
+app.use(express.static(path.join(__dirname, 'public')));
 app.use('/images', express.static(path.join(__dirname, 'images')));
+
 const fileStorage = multer.diskStorage({
     destination: (req, file, cb) => {
 cb(null, 'images')
     },
     filename: (req, file, cb) => {
+        console.log("saving file")
+        console.log(Date.now().toString() + '-' + file.originalname)
 cb(null,  Date.now().toString() + '-' + file.originalname)
     }
 });
@@ -50,8 +46,20 @@ const filefilter = (req, file, cb) => {
     };
 
 }
-
 app.use(multer({storage: fileStorage, fileFilter: filefilter}).single('image'));
+
+app.use((req, res, next) => {   
+    res.setHeader('Access-Control-Allow-Origin', '*')
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE');
+    res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requeted-With, Content-Type, Accept, Authorization, uid, facilityId');
+    next();
+});
+
+
+
+
+
+
 
 const studentRoutes = require('./routes/student');
 const classroomRoutes = require('./routes/classroom');

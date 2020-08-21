@@ -1,12 +1,10 @@
 const fs = require('fs');
 
 const deleteFile = (filePath) => {  
-fs.unlink(filePath), (err) => {
-    if(err) {
-        console.log('in error block')
-        throw(err);
-    }
-}
+    console.log("deleting file") 
+fs.unlink(filePath, err => {
+    console.log(err)
+} )
 }
 
 exports.deleteFile = deleteFile;

@@ -12,6 +12,5 @@ router.post('/login', body('password')
 
 router.put('/reset/password', authController.resetPassword);
 
-router.put('/reset/username', authController.resetUsername);
 
 module.exports = router;

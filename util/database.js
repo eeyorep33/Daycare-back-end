@@ -1,6 +1,7 @@
 const Sequelize = require('sequelize');
+require('dotenv').config()
 
-const sequelize = new Sequelize('daycare-schema', 'root', 'fergip33', {
+const sequelize = new Sequelize(process.env.SCHEMA, process.env.USER_NAME, process.env.PASSWORD, {
     dialect: 'mysql', 
     host: 'localhost'
 });

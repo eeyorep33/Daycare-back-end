@@ -9,7 +9,7 @@ exports.getAnnouncements = async (req, res, next) => {
   catch(err) {
     if (!err.statusCode) {
       const error = new Error('Failed to delete Employee');
-      error.statusCode = 500;
+      err.statusCode = 500;
     }
     next(err);
   }

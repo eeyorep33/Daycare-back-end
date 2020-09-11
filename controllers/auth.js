@@ -3,6 +3,7 @@ const Employee = require('../models/employee');
 const { validationResult } = require('express-validator/check');
 const jwt = require('jsonwebtoken');
 
+
 exports.login = async (req, res, next) => {
   let errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -49,12 +50,16 @@ exports.login = async (req, res, next) => {
 };
 
 exports.resetPassword = async (req, res, next) => {
+  console.log("body")
+  console.log(req.body)
+
   const updatedPassword = req.body.newPassword;
   const currentPassword = req.body.password;
   const userName = req.body.userName;
   try {
     const user = await Employee.findOne({ where: { userName: userName } });
     if (!user) {
+      console.log("in no user")
       const error = new Error('No user found');
       error.statusCode = 401;
       throw error;
@@ -62,6 +67,7 @@ exports.resetPassword = async (req, res, next) => {
     const isEqual = await bcrypt.compare(currentPassword, user.password);
 
     if (!isEqual) {
+      console.log("in no match")
       const error = new Error('Invalid password');
       error.statusCode = 401;
       throw error;
@@ -69,7 +75,8 @@ exports.resetPassword = async (req, res, next) => {
     const newPassword = await bcrypt.hash(updatedPassword, 12);
     user.password = newPassword;
     const updated = await user.save();
-    res.status(200).json({ message: 'Password updated' });
+    console.log(updated)
+    res.status(200).json({user: updated, message: "Password Updated"});
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
@@ -78,32 +85,4 @@ exports.resetPassword = async (req, res, next) => {
   }
 };
 
-exports.resetUsername = async (req, res, next) => {
-  const newUserName = req.body.newUserName;
-  const currentUserName = req.body.userName;
-  try {
-    const takenUsername = await  Employee.findOne({where: { userName: newUserName },
-    });
-    if (takenUsername) {
-      const error = new Error('Username already in use');
-      error.statusCode = 422;
-      throw error;
-    }
-    const user = await Employee.findOne({
-      where: { userName: currentUserName },
-    });
-    if (!user) {
-      const error = new Error('No user found');
-      error.statusCode = 401;
-      throw error;
-    }
-    user.userName = newUserName;
-    const result = await user.save();
-    res.status(200).json({ message: 'User name updated' });
-  } catch (err) {
-    if (!err.statusCode) {
-      err.statusCode = 500;
-    }
-    next(err);
-  }
-};
+

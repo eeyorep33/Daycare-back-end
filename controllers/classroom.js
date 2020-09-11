@@ -88,13 +88,13 @@ exports.deleteClassroom = async(req, res, next) => {
     }
     const classroom = await   Classroom.findByPk(classroomId) 
     const result =  await classroom.destroy();
-    const menu = await  Menu.findOne({where: {name: classroom.name, facilityId: facility}})
+    const menu = await  Menu.findOne({where: {name: classroom.name, facilityId: facility}})  
     const menuResult = await    menu.destroy()
     res.json({id: classroomId})
   }
    catch(err) {
     if (!err.statusCode) {
-      error.statusCode = 500;
+      err.statusCode = 500;
     }
     next(err);
    }

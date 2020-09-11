@@ -1,11 +1,25 @@
 const Employee = require('../models/employee');
 const { validationResult } = require('express-validator/check');
 const fileHelper = require('../util/file');
-const bcrypt = require('bcrypt');
+const signupUtil = require('../util/signupUtil')
+const nodeMailer = require('nodemailer');
+const sendGrid = require('nodemailer-sendgrid-transport');
+
+
+const transporter = nodeMailer.createTransport(
+  sendGrid({
+    auth: {
+      api_key:
+      process.env.EMAIL_KEY,
+    },
+  })
+);
+
 
 exports.getEmployee = async (req, res, next) => {
   const employeeId = req.params.id;
   try {
+    
     const employee = await Employee.findByPk(employeeId);
     res.status(200).json({ user: employee });
   } catch (err) {
@@ -54,33 +68,44 @@ exports.createEmployee = async (req, res, next) => {
       error.statusCode = 422;
       throw error;
     }
-    const name = req.body.name;    
+     const name = req.body.name;    
     const is_admin = req.body.is_admin;
-    const image = req.file; 
-    const nameArray = name.split(' ');
-    const first = nameArray[0].substring(0, 2).toLowerCase();
-    const last = nameArray[1].substring(0, 2).toLowerCase();
-    const middle = Math.floor(Math.random() * 10000);
-    const username = first + middle + last;
-    var pwdChars =
-      '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
-    var pwdLen = 7;
-    var randPassword = Array(pwdLen)
-      .fill(pwdChars)
-      .map((x) => {
-        return x[Math.floor(Math.random() * x.length)];
-      })
-      .join('');
-    const password = await bcrypt.hash(randPassword, 12);
+     const image = req.file;   
+    const username =  await signupUtil.userNameGenerator(name);
+    const password= await signupUtil.passwordGenerator()
+    const encryptedPassword = await signupUtil.encryptPassword(password)
     const employee = await Employee.create({
       name: name,
       email: email,
       is_admin: is_admin,
       userName: username,
-      password: password,
+      password: encryptedPassword,
       image: image ? image.path : null,
       facilityId: facility,
     });
+    transporter.sendMail({
+      to: email,
+      from: 'eeyorep33@gmail.com',
+      subject: 'Signup Successful',
+      html: `  <html>
+      <head>
+       
+      </head>
+      <body>
+        <div style="font-size:12px; line-height:20px;  text-align:Center;" >
+        <div style="background: #00FFFF; height: 50px; width: 100%">
+        <h1 style="color: orange; padding: 15px">Helping Hands</h1></div>
+         <h1 Style="color: orange;margin: 50px 0 0 0">Here is your user name and temporary password</h1>
+         <h3 style="margin: 50px 0 0 0"><span style="color: orange">User Name: ${username}</span>
+         <h3><span style="color: orange">Password: ${password}</span>
+         </h3>
+          </div>
+        
+        </div>
+      </body>
+    </html>`
+    });
+ 
     res.status(201).json({
       message: 'Employee Created',
       employee: employee,
@@ -161,6 +186,8 @@ exports.editEmployee = async (req, res, next) => {
 };
 
 exports.editUserProfile = async(req, res, next) => {
+  console.log("param user id")
+    console.log(req.params.id)
   const updatedName = req.body.name;
   const updatedEmail = req.body.email; 
   const employeeId = req.params.id;
@@ -173,19 +200,27 @@ exports.editUserProfile = async(req, res, next) => {
   }
   try {
     const user = await  Employee.findByPk(employeeId)
-    if (employee.id !== req.id) {
+    console.log("found user id")
+    console.log(user.id)
+    
+    console.log("is equals")
+    console.log(user.id !== req.params.id)
+    if (user.id.toString() !== req.params.id) {
+      console.log('in error block')
       const error = new Error('Not Authorized to edit this profile');
       error.statusCode = 401;
       throw error;
     }
-    employee.name = updatedName;
-    employee.email = updatedEmail;
+    user.name = updatedName;
+    user.email = updatedEmail;
     if (updatedImage) {
-      fileHelper.deleteFile(employee.image);
-      employee.image = updatedImage.path;
-      const updatedEmployee = await employee.save()
-      res.status(200).json({ message: 'Employee Updated!', employee: updatedEmployee });
+      fileHelper.deleteFile(user.image);
+      user.image = updatedImage.path;
+      console.log("new User")
+      console.log(user)      
     }
+    const updatedEmployee = await user.save()
+      res.status(200).json({ message: 'User Updated!', user: updatedEmployee });
   }
  catch(err) {
   if (!err.statusCode) {

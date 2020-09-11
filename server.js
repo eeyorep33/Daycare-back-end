@@ -3,6 +3,8 @@ const bodyParser = require('body-parser');
 const sequelize = require('./util/database');
 const multer = require('multer');
 const path = require('path');
+const helmet = require('helmet')
+
 
 const Classroom = require('./models/classroom');
 const Student = require('./models/student');
@@ -56,9 +58,7 @@ app.use((req, res, next) => {
 });
 
 
-
-
-
+app.use(helmet())
 
 
 const studentRoutes = require('./routes/student');

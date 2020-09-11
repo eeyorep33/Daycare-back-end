@@ -5,11 +5,15 @@ const { body } = require('express-validator/check');
 const isAuth = require('../middleware/is-auth');
 
 
-router.get('/report/:id', isAuth, reportController.getReport);
+router.get('/report/:id', reportController.getReport);
+
+router.get('/report/archive/:id', reportController.getArchiveReport);
+
+router.get('/report/list/:id', reportController.getReportList)
 
 router.post('/report', isAuth, reportController.createReport);
 
-router.post('/feeding', isAuth, reportController.createFeeding);
+router.post('/feeding', reportController.createFeeding);
 
 router.put('/feeding/:id', isAuth, reportController.editFeeding);
 

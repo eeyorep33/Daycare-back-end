@@ -66,7 +66,7 @@ exports.signup = async (req, res, next) => {
       </body>
     </html>`
     });
-    res.status(201).json({ message: 'Facility enrolled' });
+    res.status(201).json({ facility: newFacility, message: 'Facility enrolled' });
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;

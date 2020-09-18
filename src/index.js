@@ -118,17 +118,18 @@ app.use((error, req, res, next) => {
     res.status(status).json({message: message, data: data});
 });
 
-
+app.listen(process.env.PORT || 8080);
+console.log(process.env.PORT)
 
  
-sequelize
-//.sync({force: true})
-.sync()
+// sequelize
+// //.sync({force: true})
+// .sync()
    
-.then(result => {
-    app.listen(process.env.PORT || 8080);
-    console.log(process.env.PORT)
-})
-.catch(err => {
-    console.log(err)
-});
+// .then(result => {
+//     app.listen(process.env.PORT || 8080);
+//     console.log(process.env.PORT)
+// })
+// .catch(err => {
+//     console.log(err)
+// });

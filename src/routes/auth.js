@@ -1,7 +1,7 @@
 const express = require('express');
 const authController = require('../controllers/auth');
 const router = express.Router();
-const { body } = require('express-validator/check');
+const { body } = require('express-validator');
 
 
 router.post('/login', body('password')

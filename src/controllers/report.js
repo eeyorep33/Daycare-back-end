@@ -7,7 +7,7 @@ const Supplies = require('../models/supplies');
 const Medicine = require('../models/medicine');
 const Comment = require('../models/comments');
 const Student = require('../models/student')
-const Sequelize = require('Sequelize');
+const Sequelize = require('sequelize');
 const Op = Sequelize.Op
 const moment = require('moment')
 

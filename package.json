@@ -20,6 +20,10 @@
   "bugs": {
     "url": "https://github.com/eeyorep33/Daycare-back-end/issues"
   },
+  "engines": {
+    "node": "12.17.0",
+    "npm": "6.14.4"
+  },
   "homepage": "https://github.com/eeyorep33/Daycare-back-end#readme",
   "dependencies": {
     "@sendgrid/mail": "^7.2.5",

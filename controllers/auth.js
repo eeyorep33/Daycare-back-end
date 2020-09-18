@@ -16,6 +16,7 @@ exports.login = async (req, res, next) => {
   const password = req.body.password;
   try {
     const user = await Employee.findOne({ where: { userName: userName } });
+    console.log("user", user)
     if (!user) {
       const error = new Error('No user found');
       error.statusCode = 401;

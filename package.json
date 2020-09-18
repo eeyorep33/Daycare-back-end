@@ -6,8 +6,9 @@
   "proxy": "http://localhost:8080",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "heroku-postbuild": "npm run build",
     "start-server": "node index.js",
-    "start": "npm run build && node dist/index.js",
+    "start": "node dist/index.js",
     "build": "rimraf dist/ && node ./src --out-dir dist/ --copy-files",
     "start:dev": "nodemon ./src/index.js"
   },

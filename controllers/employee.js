@@ -192,6 +192,7 @@ exports.editUserProfile = async(req, res, next) => {
   const updatedEmail = req.body.email; 
   const employeeId = req.params.id;
   const updatedImage = req.file;
+  console.log(updatedImage)
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     const error = new Error('Validation failed incorrect information entered');
@@ -220,6 +221,7 @@ exports.editUserProfile = async(req, res, next) => {
       console.log(user)      
     }
     const updatedEmployee = await user.save()
+    
       res.status(200).json({ message: 'User Updated!', user: updatedEmployee });
   }
  catch(err) {

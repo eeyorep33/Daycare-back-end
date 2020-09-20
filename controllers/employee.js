@@ -215,8 +215,9 @@ exports.editUserProfile = async(req, res, next) => {
     user.name = updatedName;
     user.email = updatedEmail;
     if (updatedImage) {
-      console.log('old image',user.image)
+     if(user.image) {
       fileHelper.deleteFile(user.image);
+     }     
       user.image = updatedImage.path;
       console.log("new User")
       console.log(user)      
